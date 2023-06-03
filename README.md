@@ -1,4 +1,4 @@
-# Convert HTML code
+# HTML Code Translator
 #### Video Demo:  <URL HERE>
 #### Description:
 

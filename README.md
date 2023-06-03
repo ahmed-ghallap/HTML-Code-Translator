@@ -1,5 +1,5 @@
 # HTML Code Translator
-#### Video Demo: [url](https://youtu.be/gI16X7aFnrw)
+#### Video Demo: [project video link](https://youtu.be/gI16X7aFnrw)
 #### Description:
 
     This program translates html code written in Arabic to html code written in English.

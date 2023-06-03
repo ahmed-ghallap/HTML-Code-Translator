@@ -2,7 +2,7 @@ import re
 import argparse
 import json
 
-ARABIC_LETTER = f"[\u0600-\u06ff\u0750-\u077f\ufb50-\ufbc1\ufbd3-\ufd3f\ufd50-\ufd8f\ufd92-\ufdc7\ufe70-\ufefc\uFDF0-\uFDFD0-9]"
+ARABIC_LETTER = r"[_\-\u0600-\u06ff\u0750-\u077f\ufb50-\ufbc1\ufbd3-\ufd3f\ufd50-\ufd8f\ufd92-\ufdc7\ufe70-\ufefc\uFDF0-\uFDFD0-9]"
 
 START_TAG = (
     rf'<({ARABIC_LETTER}+)( *(?: *{ARABIC_LETTER}*)*(?:{ARABIC_LETTER}\s?=\s?".*")*) *>'
@@ -27,27 +27,61 @@ def main():
     )
 
     parser.add_argument(
-        "input_file",
-        metavar="input",
-        help="The input's file name",
-    )
-    parser.add_argument(
-        "output_file",
-        help="The output's file name",
-        metavar="output",
-        default="converted_output.html",
+        "-c","--convert",
+        metavar="[file-name]",
+        help="Convert or translate arabic text file to HTML file",
+        nargs=2
+        
     )
 
-    parser.add_argument("-c", "--convert", metavar="", help="does not do anythig")
+    parser.add_argument(
+        "-m", "--modify",
+        help="Modify the date base by updateing tags and attributes",
+        action="store_true"
+    )
+
 
     args = parser.parse_args()
 
+    if args.modify:
+        flag = input("for modify tags enter 't' or 'a' for attributes\n")
+        if flag == 't':
+            print("You can exit the program by press  control-d")
+            while True:
+                try:
+                    en = input("en: ")
+                    ar = input("ar: ")
+                    try:
+                        add_tag(en=en, ar=ar)
+                    except ValueError:
+                        print(f"{en} not in our date base or {ar} is already booked")
+                except EOFError:
+                    break            
+
+        elif flag == "a":
+            while True:
+                try:
+                    en = input("en: ")
+                    ar = input("ar: ")
+                    try:
+                        add_attribute(en=en, ar=ar)
+                    except ValueError:
+                        print(f"{en} not in our date base or {ar} is already booked")
+                except EOFError:
+                    break
+        else:
+            print(f"{flag} not a or t")
+            exit()
+    
+    if not args.convert:
+        return 
+
     convertedCode = []
-    with open(args.input_file) as file:
+    with open(args.convert[0]) as file:
         for line in file:
             convertedCode.append(convert(line))
 
-    with open(args.output_file, "w") as file:
+    with open(args.convert[1], "w") as file:
         for line in convertedCode:
             file.write(line + "\n")
 
@@ -100,6 +134,8 @@ def add_tag(en: str, ar: str) -> None:
 
     en_exist = ar_booked = False
     for tag in TAGS:
+        if tag["en"] == en and tag["ar"] == ar:
+            break
         if tag["en"] == en:
             en_exist = True
         if tag["ar"] == ar:
@@ -107,7 +143,7 @@ def add_tag(en: str, ar: str) -> None:
 
     if ar_booked:
         raise ValueError(f"{ar} is already booked")
-    if not en_exist:
+    if not en_exist: 
         raise ValueError(f"{en} not found in our book")
 
     with open("tags.json", "w") as file:
@@ -137,6 +173,7 @@ def add_attribute(en: str, ar: str) -> None:
             ar_booked = True
 
     if ar_booked:
+        print(ar)
         raise ValueError(f"{ar} is already booked")
     if not en_exist:
         raise ValueError(f"{en} not found in our book")

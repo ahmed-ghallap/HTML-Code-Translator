@@ -2,7 +2,7 @@
 #### Video Demo:  <URL HERE>
 #### Description:
 
-    This program translates html code writen in arabic to html code writen in english.
+    This program translates html code written in Arabic to html code written in English.
 
 **How to use**
 
@@ -18,7 +18,7 @@
 
 **The program's idea**
 
-    just searching for an arabic words between < > and then compare it with the date base if find match then will convert the word to english.
+    is just searching for Arabic words between <  > and then compare it with the database if find match then will convert the word to English version.
 
 **The program depends on**
 - regular exprsion:
